@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Size Matter Gym — Check In</title>
+<meta name="theme-color" content="#0a0a0a">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,-apple-system,Arial,sans-serif;background:#0a0a0a;color:#f5f5f5;-webkit-tap-highlight-color:transparent;min-height:100vh;display:flex;flex-direction:column;position:relative;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+:root{--red:#e11d2a;--orange:#ff6b35;--dark:#0a0a0a;--card:#131313;--line:#262626;--muted:#8a8a8a;--white:#f5f5f5}
+
+/* Chalk dust texture */
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(225,29,42,.06),transparent 40%),radial-gradient(circle at 80% 70%,rgba(255,107,53,.04),transparent 40%);pointer-events:none;z-index:0}
+
+/* HEADER */
+header{position:relative;z-index:1;padding:24px 20px 20px;text-align:center;border-bottom:1px solid var(--line)}
+.plates{display:flex;justify-content:center;gap:6px;margin-bottom:14px}
+.plate{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--red)}
+.plate.solid{background:var(--red)}
+.brand{font-size:28px;font-weight:950;letter-spacing:-1.5px;line-height:1;color:var(--white);text-transform:uppercase;margin:0}
+.brand .red{color:var(--red)}
+.tagline{color:var(--muted);font-size:10px;letter-spacing:4px;font-weight:900;margin-top:8px;text-transform:uppercase}
+.location{color:var(--muted);font-size:11px;margin-top:6px;font-weight:600}
+
+/* HOURS BAR */
+.hours{position:relative;z-index:1;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;justify-content:center;gap:20px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.hours span{color:var(--muted)}
+.hours b{color:var(--white)}
+.hours .dot{width:6px;height:6px;background:var(--red);border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* MAIN */
+main{flex:1;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;padding:30px 20px;min-height:60vh}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 24px;width:100%;max-width:420px;text-align:center;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange),var(--red))}
+
+/* LOADING */
+.loading{padding:40px 20px;text-align:center;color:var(--muted)}
+.spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* WELCOME / LOGIN */
+.icon-big{font-size:48px;margin-bottom:16px;display:block}
+h2{font-size:22px;font-weight:950;margin:0 0 8px;letter-spacing:-.5px;text-transform:uppercase}
+h2 .red{color:var(--red)}
+p.sub{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 24px}
+
+/* FORM */
+input[type="tel"]{width:100%;padding:16px;background:#0f0f0f;border:2px solid var(--line);border-radius:12px;color:var(--white);font-size:16px;font-family:inherit;font-weight:800;letter-spacing:2px;text-align:center;transition:.2s;margin-bottom:12px}
+input[type="tel"]:focus{outline:none;border-color:var(--red);background:#0f0f0f}
+input[type="tel"]::placeholder{color:#444;font-weight:600;letter-spacing:1px}
+button.primary{width:100%;padding:16px;background:var(--red);color:white;border:0;border-radius:12px;font-weight:950;font-size:15px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:.2s;box-shadow:0 8px 24px rgba(225,29,42,.35)}
+button.primary:active{transform:scale(.98)}
+button.primary:disabled{opacity:.5;cursor:not-allowed}
+.err{color:var(--red);font-size:12px;font-weight:800;margin-top:10px;display:none}
+
+/* CHECK-IN SUCCESS */
+.streak{font-size:64px;font-weight:950;color:var(--red);line-height:1;margin:8px 0;letter-spacing:-3px;text-shadow:0 0 30px rgba(225,29,42,.5)}
+.streak-label{color:var(--muted);font-size:11px;letter-spacing:4px;font-weight:900;text-transform:uppercase;margin-bottom:20px}
+.lift-tag{display:inline-block;background:rgba(225,29,42,.12);color:var(--red);border:1px solid var(--red);padding:6px 16px;border-radius:99px;font-size:11px;font-weight:950;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.name-big{font-size:24px;font-weight:950;margin:8px 0 4px;text-transform:uppercase}
+.msg{color:var(--muted);font-size:13px;line-height:1.6;margin:16px 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.stat{background:#0f0f0f;border:1px solid var(--line);border-radius:12px;padding:14px 10px}
+.stat b{display:block;font-size:22px;font-weight:950;color:var(--white);letter-spacing:-.5px}
+.stat span{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;font-weight:900;text-transform:uppercase;margin-top:4px}
+
+/* EXPIRY WARNING */
+.warning{background:linear-gradient(135deg,rgba(225,29,42,.15),rgba(255,107,53,.1));border:2px solid var(--red);border-radius:14px;padding:18px;margin-top:20px;text-align:center}
+.warning .ico{font-size:32px;margin-bottom:8px}
+.warning h3{margin:0 0 6px;font-size:15px;color:var(--red);text-transform:uppercase;letter-spacing:1px;font-weight:950}
+.warning p{margin:0;font-size:13px;color:var(--white);line-height:1.5;font-weight:600}
+
+/* EXPIRED */
+.expired{border:2px solid var(--red);background:rgba(225,29,42,.08)}
+.expired .icon-big{color:var(--red)}
+
+/* FOOTER */
+footer{position:relative;z-index:1;padding:24px 20px;text-align:center;color:var(--muted);font-size:11px;line-height:1.7;border-top:1px solid var(--line)}
+footer b{color:var(--red)}
+footer .powered{margin-top:10px;font-size:9px;letter-spacing:3px;font-weight:900;text-transform:uppercase;color:#4a4a4a}
+footer .powered a{color:var(--red);border-bottom:1px solid rgba(225,29,42,.4)}
+
+/* ERROR STATE */
+.error-card{text-align:center}
+.error-card .icon-big{color:var(--red)}
+
+@media(min-width:600px){
+  .brand{font-size:34px}
+  h2{font-size:26px}
+  .streak{font-size:76px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="plates">
+    <span class="plate solid"></span>
+    <span class="plate"></span>
+    <span class="plate solid"></span>
+    <span class="plate"></span>
+    <span class="plate solid"></span>
+  </div>
+  <h1 class="brand">SIZE <span class="red">MATTER</span> GYM</h1>
+  <div class="tagline">LIFT · REP · REPEAT</div>
+  <div class="location">📍 Near Kalandri Gate, Karnal</div>
+</header>
+
+<div class="hours">
+  <span><span class="dot"></span>MORNING <b>4AM – 10AM</b></span>
+  <span>EVENING <b>3PM – 9PM</b></span>
+</div>
+
+<main id="main">
+  <div class="card">
+    <div class="loading"><div class="spinner"></div>Loading...</div>
+  </div>
+</main>
+
+<footer>
+  <div><b>SIZE MATTER GYM</b> — Karnal</div>
+  <div style="margin-top:6px">📞 9053505335 (Munish)</div>
+  <div class="powered">Powered by <a href="https://wa.me/919671163712" target="_blank">VAAN Consultancy</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://gynphsibkcrivosuamxp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5bnBoc2lia2NyaXZvc3VhbXhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTA0NzQsImV4cCI6MjEwNTQ2NjQ3NH0.GNKrZgJFj4496-kPzfdc2Fzv3bS8YO6CLrWPV4PyucM";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const GYM_NAME = "SIZE MATTER GYM";
+const STORAGE_KEY = "smg_phone";
+
+const mainEl = document.getElementById("main");
+
+function esc(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+function show(html){ mainEl.innerHTML = html; }
+
+function showLoading(){
+  show('<div class="card"><div class="loading"><div class="spinner"></div>Loading...</div></div>');
+}
+
+/* ====== MAIN FLOW ====== */
+async function init(){
+  showLoading();
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    /* Auto check-in with saved phone */
+    await handleCheckIn(saved, true);
+  } else {
+    /* Show phone entry */
+    showLoginScreen();
+  }
+}
+
+function showLoginScreen(){
+  show(`<div class="card">
+    <span class="icon-big">🏋️</span>
+    <h2>CHECK <span class="red">IN</span></h2>
+    <p class="sub">Enter your phone number to log your session. You only need to do this once — we'll remember you on this phone.</p>
+    <input id="phone" type="tel" inputmode="numeric" placeholder="Enter 10-digit number" maxlength="10" autocomplete="off">
+    <button class="primary" id="checkBtn" onclick="submitPhone()">LOG MY LIFT</button>
+    <div class="err" id="errMsg">Please enter a valid 10-digit number</div>
+  </div>`);
+  const inp = document.getElementById("phone");
+  inp.focus();
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") submitPhone(); });
+}
+
+async function submitPhone(){
+  const inp = document.getElementById("phone");
+  const btn = document.getElementById("checkBtn");
+  const err = document.getElementById("errMsg");
+  const phone = (inp.value || "").replace(/\D/g, "");
+  if (phone.length !== 10) {
+    err.style.display = "block";
+    return;
+  }
+  err.style.display = "none";
+  btn.disabled = true;
+  btn.textContent = "CHECKING...";
+  await handleCheckIn(phone, false);
+}
+
+/* ====== CHECK-IN LOGIC ====== */
+async function handleCheckIn(phone, isAuto){
+  try {
+    /* Find member */
+    const { data: members, error } = await sb.from("gym_members").select("*").eq("phone", phone).limit(1);
+    if (error) throw error;
+
+    if (!members || members.length === 0) {
+      /* Member not found — first time, show registration */
+      if (isAuto) localStorage.removeItem(STORAGE_KEY);
+      showNotRegistered(phone);
+      return;
+    }
+
+    const member = members[0];
+
+    /* Check expiry */
+    const expiry = new Date(member.expiry_date);
+    const today = new Date();
+    expiry.setHours(23,59,59,999);
+    const daysLeft = Math.ceil((expiry - today) / (1000*60*60*24));
+
+    /* If expired */
+    if (daysLeft < 0) {
+      showExpired(member, daysLeft);
+      return;
+    }
+
+    /* Log the check-in */
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const { data: existingCheckin } = await sb.from("gym_checkins")
+      .select("*")
+      .eq("phone", phone)
+      .gte("checked_in_at", todayStart.toISOString())
+      .limit(1);
+
+    /* Only log if not already checked in today */
+    if (!existingCheckin || existingCheckin.length === 0) {
+      await sb.from("gym_checkins").insert({ member_id: member.id, phone: phone });
+    }
+
+    /* Get streak + stats */
+    const stats = await getStats(phone);
+
+    /* Save phone for auto-login next time */
+    localStorage.setItem(STORAGE_KEY, phone);
+
+    /* Show success */
+    showSuccess(member, stats, daysLeft);
+  } catch (err) {
+    console.error(err);
+    showError("Something went wrong. Please try again or ask at reception.");
+  }
+}
+
+async function getStats(phone){
+  /* Get all check-ins for this member */
+  const { data: all } = await sb.from("gym_checkins").select("checked_in_at").eq("phone", phone).order("checked_in_at", { ascending: false });
+  if (!all || all.length === 0) return { streak: 1, best: 1, month: 1, total: 0 };
+
+  /* Convert to local date strings */
+  const dates = [...new Set(all.map(c => new Date(c.checked_in_at).toDateString()))];
+  const dateObjs = dates.map(d => new Date(d));
+
+  /* Current streak */
+  const today = new Date(); today.setHours(0,0,0,0);
+  let streak = 0;
+  let check = new Date(today);
+  const dateSet = new Set(dates);
+  while (true) {
+    if (dateSet.has(check.toDateString())) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    } else {
+      /* Allow yesterday gap */
+      if (streak === 0) {
+        const yest = new Date(today); yest.setDate(yest.getDate() - 1);
+        if (dateSet.has(yest.toDateString())) {
+          streak = 1;
+          check = new Date(yest);
+          check.setDate(check.getDate() - 1);
+          continue;
+        }
+      }
+      break;
+    }
+  }
+
+  /* Best streak ever */
+  let best = 1, curr = 1;
+  const sorted = [...dateObjs].sort((a,b) => a - b);
+  for (let i = 1; i < sorted.length; i++){
+    const diff = (sorted[i] - sorted[i-1]) / (1000*60*60*24);
+    if (diff === 1) curr++;
+    else { if (curr > best) best = curr; curr = 1; }
+  }
+  if (curr > best) best = curr;
+
+  /* This month */
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const monthCount = dates.filter(d => new Date(d) >= monthStart).length;
+
+  return { streak: Math.max(streak,1), best: Math.max(best,1), month: monthCount, total: dates.length };
+}
+
+/* ====== SCREENS ====== */
+function showSuccess(member, stats, daysLeft){
+  const name = member.name.split(" ")[0];
+  let warningHTML = "";
+  if (daysLeft <= 3) {
+    warningHTML = `<div class="warning">
+      <div class="ico">⚠️</div>
+      <h3>Membership expires in ${daysLeft} day${daysLeft===1?'':'s'}</h3>
+      <p>Don't break the chain. Renew at reception.</p>
+    </div>`;
+  }
+
+  show(`<div class="card">
+    <div class="lift-tag">✅ LIFT LOGGED</div>
+    <div class="streak">${stats.streak}</div>
+    <div class="streak-label">DAY STREAK 🔥</div>
+    <div class="name-big">${esc(name)}</div>
+    <p class="msg">${stats.streak >= 7 ? "Consistency builds monsters." : stats.streak >= 3 ? "Keep the chain alive." : "Day 1 done. Come back tomorrow."}</p>
+    <div class="stats">
+      <div class="stat"><b>${stats.month}</b><span>This Month</span></div>
+      <div class="stat"><b>${stats.best}</b><span>Best Streak</span></div>
+    </div>
+    ${warningHTML}
+  </div>`);
+}
+
+function showExpired(member, daysLeft){
+  const name = member.name.split(" ")[0];
+  const daysAgo = Math.abs(daysLeft);
+  show(`<div class="card expired">
+    <span class="icon-big">⛔</span>
+    <h2>MEMBERSHIP <span class="red">EXPIRED</span></h2>
+    <p class="sub">${esc(name)}, your membership ended ${daysAgo} day${daysAgo===1?'':'s'} ago. Please renew at reception to continue.</p>
+    <button class="primary" onclick="logout()">RENEW AT RECEPTION</button>
+  </div>`);
+}
+
+function showNotRegistered(phone){
+  show(`<div class="card">
+    <span class="icon-big">🤔</span>
+    <h2>NOT <span class="red">REGISTERED</span></h2>
+    <p class="sub">We couldn't find a membership for <b>${esc(phone)}</b>. Please check with Munish at reception to get registered.</p>
+    <button class="primary" onclick="logout()">TRY AGAIN</button>
+  </div>`);
+}
+
+function showError(msg){
+  show(`<div class="card error-card">
+    <span class="icon-big">⚠️</span>
+    <h2>OOPS</h2>
+    <p class="sub">${esc(msg)}</p>
+    <button class="primary" onclick="init()">TRY AGAIN</button>
+  </div>`);
+}
+
+function logout(){
+  localStorage.removeItem(STORAGE_KEY);
+  init();
+}
+
+/* ====== INIT ====== */
+init();
+</script>
+</body>
+  </html>
