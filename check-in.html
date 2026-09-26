@@ -214,13 +214,18 @@ async function handleCheckIn(phone, isAuto){
       return;
     }
 
-    /* Log the check-in */
-    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-    const { data: existingCheckin } = await sb.from("gym_checkins")
-      .select("*")
-      .eq("phone", phone)
-      .gte("checked_in_at", todayStart.toISOString())
-      .limit(1);
+    /* Log the check-in (using IST date) */
+const now = new Date();
+const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+const todayStartIST = new Date(istNow);
+todayStartIST.setUTCHours(0, 0, 0, 0);
+const todayStartUTC = new Date(todayStartIST.getTime() - (5.5 * 60 * 60 * 1000));
+
+const { data: existingCheckin } = await sb.from("gym_checkins")
+  .select("*")
+  .eq("phone", phone)
+  .gte("checked_in_at", todayStartUTC.toISOString())
+  .limit(1);
 
     /* Only log if not already checked in today */
     if (!existingCheckin || existingCheckin.length === 0) {
