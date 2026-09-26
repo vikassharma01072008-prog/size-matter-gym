@@ -10,11 +10,7 @@
 body{margin:0;font-family:Inter,-apple-system,Arial,sans-serif;background:#0a0a0a;color:#f5f5f5;-webkit-tap-highlight-color:transparent;min-height:100vh;display:flex;flex-direction:column;position:relative;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 :root{--red:#e11d2a;--orange:#ff6b35;--dark:#0a0a0a;--card:#131313;--line:#262626;--muted:#8a8a8a;--white:#f5f5f5}
-
-/* Chalk dust texture */
 body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(225,29,42,.06),transparent 40%),radial-gradient(circle at 80% 70%,rgba(255,107,53,.04),transparent 40%);pointer-events:none;z-index:0}
-
-/* HEADER */
 header{position:relative;z-index:1;padding:24px 20px 20px;text-align:center;border-bottom:1px solid var(--line)}
 .plates{display:flex;justify-content:center;gap:6px;margin-bottom:14px}
 .plate{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--red)}
@@ -23,31 +19,21 @@ header{position:relative;z-index:1;padding:24px 20px 20px;text-align:center;bord
 .brand .red{color:var(--red)}
 .tagline{color:var(--muted);font-size:10px;letter-spacing:4px;font-weight:900;margin-top:8px;text-transform:uppercase}
 .location{color:var(--muted);font-size:11px;margin-top:6px;font-weight:600}
-
-/* HOURS BAR */
 .hours{position:relative;z-index:1;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;justify-content:center;gap:20px;font-size:11px;font-weight:800;letter-spacing:.5px}
 .hours span{color:var(--muted)}
 .hours b{color:var(--white)}
 .hours .dot{width:6px;height:6px;background:var(--red);border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* MAIN */
 main{flex:1;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;padding:30px 20px;min-height:60vh}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 24px;width:100%;max-width:420px;text-align:center;position:relative;overflow:hidden}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange),var(--red))}
-
-/* LOADING */
 .loading{padding:40px 20px;text-align:center;color:var(--muted)}
 .spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* WELCOME / LOGIN */
 .icon-big{font-size:48px;margin-bottom:16px;display:block}
 h2{font-size:22px;font-weight:950;margin:0 0 8px;letter-spacing:-.5px;text-transform:uppercase}
 h2 .red{color:var(--red)}
 p.sub{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 24px}
-
-/* FORM */
 input[type="tel"]{width:100%;padding:16px;background:#0f0f0f;border:2px solid var(--line);border-radius:12px;color:var(--white);font-size:16px;font-family:inherit;font-weight:800;letter-spacing:2px;text-align:center;transition:.2s;margin-bottom:12px}
 input[type="tel"]:focus{outline:none;border-color:var(--red);background:#0f0f0f}
 input[type="tel"]::placeholder{color:#444;font-weight:600;letter-spacing:1px}
@@ -55,8 +41,6 @@ button.primary{width:100%;padding:16px;background:var(--red);color:white;border:
 button.primary:active{transform:scale(.98)}
 button.primary:disabled{opacity:.5;cursor:not-allowed}
 .err{color:var(--red);font-size:12px;font-weight:800;margin-top:10px;display:none}
-
-/* CHECK-IN SUCCESS */
 .streak{font-size:64px;font-weight:950;color:var(--red);line-height:1;margin:8px 0;letter-spacing:-3px;text-shadow:0 0 30px rgba(225,29,42,.5)}
 .streak-label{color:var(--muted);font-size:11px;letter-spacing:4px;font-weight:900;text-transform:uppercase;margin-bottom:20px}
 .lift-tag{display:inline-block;background:rgba(225,29,42,.12);color:var(--red);border:1px solid var(--red);padding:6px 16px;border-radius:99px;font-size:11px;font-weight:950;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
@@ -66,27 +50,18 @@ button.primary:disabled{opacity:.5;cursor:not-allowed}
 .stat{background:#0f0f0f;border:1px solid var(--line);border-radius:12px;padding:14px 10px}
 .stat b{display:block;font-size:22px;font-weight:950;color:var(--white);letter-spacing:-.5px}
 .stat span{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;font-weight:900;text-transform:uppercase;margin-top:4px}
-
-/* EXPIRY WARNING */
 .warning{background:linear-gradient(135deg,rgba(225,29,42,.15),rgba(255,107,53,.1));border:2px solid var(--red);border-radius:14px;padding:18px;margin-top:20px;text-align:center}
 .warning .ico{font-size:32px;margin-bottom:8px}
 .warning h3{margin:0 0 6px;font-size:15px;color:var(--red);text-transform:uppercase;letter-spacing:1px;font-weight:950}
 .warning p{margin:0;font-size:13px;color:var(--white);line-height:1.5;font-weight:600}
-
-/* EXPIRED */
 .expired{border:2px solid var(--red);background:rgba(225,29,42,.08)}
 .expired .icon-big{color:var(--red)}
-
-/* FOOTER */
 footer{position:relative;z-index:1;padding:24px 20px;text-align:center;color:var(--muted);font-size:11px;line-height:1.7;border-top:1px solid var(--line)}
 footer b{color:var(--red)}
 footer .powered{margin-top:10px;font-size:9px;letter-spacing:3px;font-weight:900;text-transform:uppercase;color:#4a4a4a}
 footer .powered a{color:var(--red);border-bottom:1px solid rgba(225,29,42,.4)}
-
-/* ERROR STATE */
 .error-card{text-align:center}
 .error-card .icon-big{color:var(--red)}
-
 @media(min-width:600px){
   .brand{font-size:34px}
   h2{font-size:26px}
@@ -131,7 +106,6 @@ footer .powered a{color:var(--red);border-bottom:1px solid rgba(225,29,42,.4)}
 const SUPABASE_URL = "https://gynphsibkcrivosuamxp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5bnBoc2lia2NyaXZvc3VhbXhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTA0NzQsImV4cCI6MjEwNTQ2NjQ3NH0.GNKrZgJFj4496-kPzfdc2Fzv3bS8YO6CLrWPV4PyucM";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const GYM_NAME = "SIZE MATTER GYM";
 const STORAGE_KEY = "smg_phone";
 
 const mainEl = document.getElementById("main");
@@ -149,10 +123,8 @@ async function init(){
   showLoading();
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
-    /* Auto check-in with saved phone */
     await handleCheckIn(saved, true);
   } else {
-    /* Show phone entry */
     showLoginScreen();
   }
 }
@@ -194,7 +166,6 @@ async function handleCheckIn(phone, isAuto){
     if (error) throw error;
 
     if (!members || members.length === 0) {
-      /* Member not found — first time, show registration */
       if (isAuto) localStorage.removeItem(STORAGE_KEY);
       showNotRegistered(phone);
       return;
@@ -203,24 +174,24 @@ async function handleCheckIn(phone, isAuto){
     const member = members[0];
 
     /* Check gym hours (IST) */
-const now = new Date();
-const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-const currentHour = istNow.getUTCHours();
-const currentMin = istNow.getUTCMinutes();
-const currentTime = currentHour * 60 + currentMin;
+    const nowHours = new Date();
+    const istNowHours = new Date(nowHours.getTime() + (5.5 * 60 * 60 * 1000));
+    const currentHour = istNowHours.getUTCHours();
+    const currentMin = istNowHours.getUTCMinutes();
+    const currentTime = currentHour * 60 + currentMin;
 
-const morningOpen  = 4 * 60;
-const morningClose = 10 * 60;
-const eveningOpen  = 15 * 60;
-const eveningClose = 21 * 60;
+    const morningOpen  = 4 * 60;
+    const morningClose = 10 * 60;
+    const eveningOpen  = 15 * 60;
+    const eveningClose = 21 * 60;
 
-const isMorningOpen = currentTime >= morningOpen && currentTime < morningClose;
-const isEveningOpen = currentTime >= eveningOpen && currentTime < eveningClose;
+    const isMorningOpen = currentTime >= morningOpen && currentTime < morningClose;
+    const isEveningOpen = currentTime >= eveningOpen && currentTime < eveningClose;
 
-if (!isMorningOpen && !isEveningOpen) {
-  showClosed();
-  return;
-  }
+    if (!isMorningOpen && !isEveningOpen) {
+      showClosed();
+      return;
+    }
 
     /* Check expiry */
     const expiry = new Date(member.expiry_date);
@@ -228,37 +199,31 @@ if (!isMorningOpen && !isEveningOpen) {
     expiry.setHours(23,59,59,999);
     const daysLeft = Math.ceil((expiry - today) / (1000*60*60*24));
 
-    /* If expired */
     if (daysLeft < 0) {
       showExpired(member, daysLeft);
       return;
     }
 
     /* Log the check-in (using IST date) */
-const now = new Date();
-const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-const todayStartIST = new Date(istNow);
-todayStartIST.setUTCHours(0, 0, 0, 0);
-const todayStartUTC = new Date(todayStartIST.getTime() - (5.5 * 60 * 60 * 1000));
+    const nowCheckin = new Date();
+    const istNowCheckin = new Date(nowCheckin.getTime() + (5.5 * 60 * 60 * 1000));
+    const todayStartIST = new Date(istNowCheckin);
+    todayStartIST.setUTCHours(0, 0, 0, 0);
+    const todayStartUTC = new Date(todayStartIST.getTime() - (5.5 * 60 * 60 * 1000));
 
-const { data: existingCheckin } = await sb.from("gym_checkins")
-  .select("*")
-  .eq("phone", phone)
-  .gte("checked_in_at", todayStartUTC.toISOString())
-  .limit(1);
+    const { data: existingCheckin } = await sb.from("gym_checkins")
+      .select("*")
+      .eq("phone", phone)
+      .gte("checked_in_at", todayStartUTC.toISOString())
+      .limit(1);
 
     /* Only log if not already checked in today */
     if (!existingCheckin || existingCheckin.length === 0) {
       await sb.from("gym_checkins").insert({ member_id: member.id, phone: phone });
     }
 
-    /* Get streak + stats */
     const stats = await getStats(phone);
-
-    /* Save phone for auto-login next time */
     localStorage.setItem(STORAGE_KEY, phone);
-
-    /* Show success */
     showSuccess(member, stats, daysLeft);
   } catch (err) {
     console.error(err);
@@ -311,54 +276,6 @@ async function getStats(phone){
   const monthCount = dates.filter(d => d.startsWith(monthKey)).length;
 
   return { streak: Math.max(streak, 1), best: Math.max(best, 1), month: monthCount, total: dates.length };
-  }
-  /* Get all check-ins for this member */
-  const { data: all } = await sb.from("gym_checkins").select("checked_in_at").eq("phone", phone).order("checked_in_at", { ascending: false });
-  if (!all || all.length === 0) return { streak: 1, best: 1, month: 1, total: 0 };
-
-  /* Convert to local date strings */
-  const dates = [...new Set(all.map(c => new Date(c.checked_in_at).toDateString()))];
-  const dateObjs = dates.map(d => new Date(d));
-
-  /* Current streak */
-  const today = new Date(); today.setHours(0,0,0,0);
-  let streak = 0;
-  let check = new Date(today);
-  const dateSet = new Set(dates);
-  while (true) {
-    if (dateSet.has(check.toDateString())) {
-      streak++;
-      check.setDate(check.getDate() - 1);
-    } else {
-      /* Allow yesterday gap */
-      if (streak === 0) {
-        const yest = new Date(today); yest.setDate(yest.getDate() - 1);
-        if (dateSet.has(yest.toDateString())) {
-          streak = 1;
-          check = new Date(yest);
-          check.setDate(check.getDate() - 1);
-          continue;
-        }
-      }
-      break;
-    }
-  }
-
-  /* Best streak ever */
-  let best = 1, curr = 1;
-  const sorted = [...dateObjs].sort((a,b) => a - b);
-  for (let i = 1; i < sorted.length; i++){
-    const diff = (sorted[i] - sorted[i-1]) / (1000*60*60*24);
-    if (diff === 1) curr++;
-    else { if (curr > best) best = curr; curr = 1; }
-  }
-  if (curr > best) best = curr;
-
-  /* This month */
-  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-  const monthCount = dates.filter(d => new Date(d) >= monthStart).length;
-
-  return { streak: Math.max(streak,1), best: Math.max(best,1), month: monthCount, total: dates.length };
 }
 
 /* ====== SCREENS ====== */
@@ -426,8 +343,9 @@ function showClosed(){
     <p class="sub" style="font-size:12px">Current time: ${timeStr}</p>
     <button class="primary" onclick="init()">TRY AGAIN</button>
   </div>`);
-  }
-  function showError(msg){
+}
+
+function showError(msg){
   show(`<div class="card error-card">
     <span class="icon-big">⚠️</span>
     <h2>OOPS</h2>
