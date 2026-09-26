@@ -35,7 +35,7 @@ h2{font-size:22px;font-weight:950;margin:0 0 8px;letter-spacing:-.5px;text-trans
 h2 .red{color:var(--red)}
 p.sub{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 24px}
 input[type="tel"]{width:100%;padding:16px;background:#0f0f0f;border:2px solid var(--line);border-radius:12px;color:var(--white);font-size:16px;font-family:inherit;font-weight:800;letter-spacing:2px;text-align:center;transition:.2s;margin-bottom:12px}
-input[type="tel"]:focus{outline:none;border-color:var(--red);background:#0f0f0f}
+input[type="tel"]:focus{outline:none;border-color:var(--red)}
 input[type="tel"]::placeholder{color:#444;font-weight:600;letter-spacing:1px}
 button.primary{width:100%;padding:16px;background:var(--red);color:white;border:0;border-radius:12px;font-weight:950;font-size:15px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:.2s;box-shadow:0 8px 24px rgba(225,29,42,.35)}
 button.primary:active{transform:scale(.98)}
@@ -62,22 +62,14 @@ footer .powered{margin-top:10px;font-size:9px;letter-spacing:3px;font-weight:900
 footer .powered a{color:var(--red);border-bottom:1px solid rgba(225,29,42,.4)}
 .error-card{text-align:center}
 .error-card .icon-big{color:var(--red)}
-@media(min-width:600px){
-  .brand{font-size:34px}
-  h2{font-size:26px}
-  .streak{font-size:76px}
-}
+@media(min-width:600px){.brand{font-size:34px}h2{font-size:26px}.streak{font-size:76px}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="plates">
-    <span class="plate solid"></span>
-    <span class="plate"></span>
-    <span class="plate solid"></span>
-    <span class="plate"></span>
-    <span class="plate solid"></span>
+    <span class="plate solid"></span><span class="plate"></span><span class="plate solid"></span><span class="plate"></span><span class="plate solid"></span>
   </div>
   <h1 class="brand">SIZE <span class="red">MATTER</span> GYM</h1>
   <div class="tagline">LIFT · REP · REPEAT</div>
@@ -89,11 +81,7 @@ footer .powered a{color:var(--red);border-bottom:1px solid rgba(225,29,42,.4)}
   <span>EVENING <b>3PM – 9PM</b></span>
 </div>
 
-<main id="main">
-  <div class="card">
-    <div class="loading"><div class="spinner"></div>Loading...</div>
-  </div>
-</main>
+<main id="main"><div class="card"><div class="loading"><div class="spinner"></div>Loading...</div></div></main>
 
 <footer>
   <div><b>SIZE MATTER GYM</b> — Karnal</div>
@@ -107,15 +95,20 @@ const SUPABASE_URL = "https://gynphsibkcrivosuamxp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5bnBoc2lia2NyaXZvc3VhbXhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTA0NzQsImV4cCI6MjEwNTQ2NjQ3NH0.GNKrZgJFj4496-kPzfdc2Fzv3bS8YO6CLrWPV4PyucM";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const STORAGE_KEY = "smg_phone";
-
 const mainEl = document.getElementById("main");
 
 function esc(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-
 function show(html){ mainEl.innerHTML = html; }
+function showLoading(){ show('<div class="card"><div class="loading"><div class="spinner"></div>Loading...</div></div>'); }
 
-function showLoading(){
-  show('<div class="card"><div class="loading"><div class="spinner"></div>Loading...</div></div>');
+/* ====== IST HELPERS ====== */
+function getISTNow(){
+  return new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000));
+}
+function getISTDateKey(date){
+  /* Returns YYYY-MM-DD in IST */
+  const d = date || getISTNow();
+  return d.toISOString().slice(0, 10);
 }
 
 /* ====== MAIN FLOW ====== */
@@ -148,10 +141,7 @@ async function submitPhone(){
   const btn = document.getElementById("checkBtn");
   const err = document.getElementById("errMsg");
   const phone = (inp.value || "").replace(/\D/g, "");
-  if (phone.length !== 10) {
-    err.style.display = "block";
-    return;
-  }
+  if (phone.length !== 10) { err.style.display = "block"; return; }
   err.style.display = "none";
   btn.disabled = true;
   btn.textContent = "CHECKING...";
@@ -161,7 +151,6 @@ async function submitPhone(){
 /* ====== CHECK-IN LOGIC ====== */
 async function handleCheckIn(phone, isAuto){
   try {
-    /* Find member */
     const { data: members, error } = await sb.from("gym_members").select("*").eq("phone", phone).limit(1);
     if (error) throw error;
 
@@ -173,11 +162,10 @@ async function handleCheckIn(phone, isAuto){
 
     const member = members[0];
 
-    /* Check gym hours (IST) */
-    const nowHours = new Date();
-    const istNowHours = new Date(nowHours.getTime() + (5.5 * 60 * 60 * 1000));
-    const currentHour = istNowHours.getUTCHours();
-    const currentMin = istNowHours.getUTCMinutes();
+    /* Gym hours check (IST) */
+    const istNow = getISTNow();
+    const currentHour = istNow.getUTCHours();
+    const currentMin = istNow.getUTCMinutes();
     const currentTime = currentHour * 60 + currentMin;
 
     const morningOpen  = 4 * 60;
@@ -188,38 +176,35 @@ async function handleCheckIn(phone, isAuto){
     const isMorningOpen = currentTime >= morningOpen && currentTime < morningClose;
     const isEveningOpen = currentTime >= eveningOpen && currentTime < eveningClose;
 
-    if (!isMorningOpen && !isEveningOpen) {
-      showClosed();
-      return;
-    }
+    if (!isMorningOpen && !isEveningOpen) { showClosed(); return; }
 
-    /* Check expiry */
+    /* Expiry check */
     const expiry = new Date(member.expiry_date);
     const today = new Date();
     expiry.setHours(23,59,59,999);
     const daysLeft = Math.ceil((expiry - today) / (1000*60*60*24));
 
-    if (daysLeft < 0) {
-      showExpired(member, daysLeft);
-      return;
-    }
+    if (daysLeft < 0) { showExpired(member, daysLeft); return; }
 
-    /* Log the check-in (using IST date) */
-    const nowCheckin = new Date();
-    const istNowCheckin = new Date(nowCheckin.getTime() + (5.5 * 60 * 60 * 1000));
-    const todayStartIST = new Date(istNowCheckin);
-    todayStartIST.setUTCHours(0, 0, 0, 0);
-    const todayStartUTC = new Date(todayStartIST.getTime() - (5.5 * 60 * 60 * 1000));
+    /* Check if already checked in today (IST) */
+    const todayKey = getISTDateKey(istNow);
+    const { data: allToday } = await sb.from("gym_checkins")
+      .select("checked_in_at")
+      .eq("phone", phone);
 
-    const { data: existingCheckin } = await sb.from("gym_checkins")
-      .select("*")
-      .eq("phone", phone)
-      .gte("checked_in_at", todayStartUTC.toISOString())
-      .limit(1);
+    const alreadyToday = (allToday || []).some(c => {
+      const d = new Date(c.checked_in_at);
+      const istShifted = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
+      return istShifted.toISOString().slice(0, 10) === todayKey;
+    });
 
-    /* Only log if not already checked in today */
-    if (!existingCheckin || existingCheckin.length === 0) {
-      await sb.from("gym_checkins").insert({ member_id: member.id, phone: phone });
+    if (!alreadyToday) {
+      /* Store with IST-shifted timestamp for consistent day counting */
+      await sb.from("gym_checkins").insert({
+        member_id: member.id,
+        phone: phone,
+        checked_in_at: istNow.toISOString()
+      });
     }
 
     const stats = await getStats(phone);
@@ -232,50 +217,48 @@ async function handleCheckIn(phone, isAuto){
 }
 
 async function getStats(phone){
-  const { data: all } = await sb.from("gym_checkins").select("checked_in_at").eq("phone", phone).order("checked_in_at", { ascending: false });
-  if (!all || all.length === 0) return { streak: 1, best: 1, month: 1, total: 0 };
+  const { data: all } = await sb.from("gym_checkins")
+    .select("checked_in_at")
+    .eq("phone", phone)
+    .order("checked_in_at", { ascending: false });
 
-  function toISTDate(utcStr){
-    const d = new Date(utcStr);
-    const ist = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
-    return ist.toISOString().slice(0, 10);
-  }
+  if (!all || all.length === 0) return { streak: 0, best: 0, month: 0, total: 0 };
 
-  const dates = [...new Set(all.map(c => toISTDate(c.checked_in_at)))];
-  dates.sort().reverse();
+  /* All timestamps are stored IST-shifted → read date directly */
+  const dates = [...new Set(all.map(c => String(c.checked_in_at).slice(0, 10)))].sort().reverse();
 
-  const now = new Date();
-  const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-  const todayStr = istNow.toISOString().slice(0, 10);
-  const dateSet = new Set(dates);
+  const todayKey = getISTDateKey();
 
+  /* Current streak */
   let streak = 0;
-  let check = new Date(istNow);
-  while (true) {
-    const key = check.toISOString().slice(0, 10);
-    if (dateSet.has(key)) {
-      streak++;
-      check.setDate(check.getDate() - 1);
-    } else {
-      break;
-    }
+  let check = todayKey;
+  while (dates.includes(check)) {
+    streak++;
+    const d = new Date(check + "T00:00:00Z");
+    d.setUTCDate(d.getUTCDate() - 1);
+    check = d.toISOString().slice(0, 10);
   }
 
-  let best = 1, curr = 1;
-  const sorted = [...dates].sort();
-  for (let i = 1; i < sorted.length; i++){
-    const prev = new Date(sorted[i-1] + "T00:00:00Z");
-    const cur = new Date(sorted[i] + "T00:00:00Z");
-    const diff = (cur - prev) / (1000*60*60*24);
-    if (diff === 1) curr++;
-    else { if (curr > best) best = curr; curr = 1; }
+  /* Best streak */
+  let best = 0, curr = 0, prev = null;
+  const sortedAsc = [...dates].sort();
+  for (const d of sortedAsc){
+    if (prev){
+      const prevDate = new Date(prev + "T00:00:00Z");
+      const currDate = new Date(d + "T00:00:00Z");
+      const diff = (currDate - prevDate) / (1000*60*60*24);
+      if (diff === 1) curr++;
+      else { if (curr > best) best = curr; curr = 1; }
+    } else { curr = 1; }
+    prev = d;
   }
   if (curr > best) best = curr;
 
-  const monthKey = todayStr.slice(0, 7);
+  /* This month */
+  const monthKey = todayKey.slice(0, 7);
   const monthCount = dates.filter(d => d.startsWith(monthKey)).length;
 
-  return { streak: Math.max(streak, 1), best: Math.max(best, 1), month: monthCount, total: dates.length };
+  return { streak, best, month: monthCount, total: dates.length };
 }
 
 /* ====== SCREENS ====== */
@@ -289,7 +272,6 @@ function showSuccess(member, stats, daysLeft){
       <p>Don't break the chain. Renew at reception.</p>
     </div>`;
   }
-
   show(`<div class="card">
     <div class="lift-tag">✅ LIFT LOGGED</div>
     <div class="streak">${stats.streak}</div>
@@ -325,13 +307,12 @@ function showNotRegistered(phone){
 }
 
 function showClosed(){
-  const istNow = new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000));
+  const istNow = getISTNow();
   const hour = istNow.getUTCHours();
   const min = istNow.getUTCMinutes();
   const ampm = hour >= 12 ? "PM" : "AM";
   const h12 = hour % 12 === 0 ? 12 : hour % 12;
   const timeStr = h12 + ":" + String(min).padStart(2,'0') + " " + ampm;
-
   show(`<div class="card error-card">
     <span class="icon-big">🕐</span>
     <h2>GYM <span class="red">CLOSED</span></h2>
@@ -359,7 +340,6 @@ function logout(){
   init();
 }
 
-/* ====== INIT ====== */
 init();
 </script>
 </body>
