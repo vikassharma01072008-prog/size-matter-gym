@@ -242,6 +242,51 @@ async function handleCheckIn(phone, isAuto){
 }
 
 async function getStats(phone){
+  const { data: all } = await sb.from("gym_checkins").select("checked_in_at").eq("phone", phone).order("checked_in_at", { ascending: false });
+  if (!all || all.length === 0) return { streak: 1, best: 1, month: 1, total: 0 };
+
+  function toISTDate(utcStr){
+    const d = new Date(utcStr);
+    const ist = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
+    return ist.toISOString().slice(0, 10);
+  }
+
+  const dates = [...new Set(all.map(c => toISTDate(c.checked_in_at)))];
+  dates.sort().reverse();
+
+  const now = new Date();
+  const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+  const todayStr = istNow.toISOString().slice(0, 10);
+  const dateSet = new Set(dates);
+
+  let streak = 0;
+  let check = new Date(istNow);
+  while (true) {
+    const key = check.toISOString().slice(0, 10);
+    if (dateSet.has(key)) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  let best = 1, curr = 1;
+  const sorted = [...dates].sort();
+  for (let i = 1; i < sorted.length; i++){
+    const prev = new Date(sorted[i-1] + "T00:00:00Z");
+    const cur = new Date(sorted[i] + "T00:00:00Z");
+    const diff = (cur - prev) / (1000*60*60*24);
+    if (diff === 1) curr++;
+    else { if (curr > best) best = curr; curr = 1; }
+  }
+  if (curr > best) best = curr;
+
+  const monthKey = todayStr.slice(0, 7);
+  const monthCount = dates.filter(d => d.startsWith(monthKey)).length;
+
+  return { streak: Math.max(streak, 1), best: Math.max(best, 1), month: monthCount, total: dates.length };
+  }
   /* Get all check-ins for this member */
   const { data: all } = await sb.from("gym_checkins").select("checked_in_at").eq("phone", phone).order("checked_in_at", { ascending: false });
   if (!all || all.length === 0) return { streak: 1, best: 1, month: 1, total: 0 };
