@@ -202,6 +202,26 @@ async function handleCheckIn(phone, isAuto){
 
     const member = members[0];
 
+    /* Check gym hours (IST) */
+const now = new Date();
+const istNow = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+const currentHour = istNow.getUTCHours();
+const currentMin = istNow.getUTCMinutes();
+const currentTime = currentHour * 60 + currentMin;
+
+const morningOpen  = 4 * 60;
+const morningClose = 10 * 60;
+const eveningOpen  = 15 * 60;
+const eveningClose = 21 * 60;
+
+const isMorningOpen = currentTime >= morningOpen && currentTime < morningClose;
+const isEveningOpen = currentTime >= eveningOpen && currentTime < eveningClose;
+
+if (!isMorningOpen && !isEveningOpen) {
+  showClosed();
+  return;
+  }
+
     /* Check expiry */
     const expiry = new Date(member.expiry_date);
     const today = new Date();
@@ -387,7 +407,27 @@ function showNotRegistered(phone){
   </div>`);
 }
 
-function showError(msg){
+function showClosed(){
+  const istNow = new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000));
+  const hour = istNow.getUTCHours();
+  const min = istNow.getUTCMinutes();
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const h12 = hour % 12 === 0 ? 12 : hour % 12;
+  const timeStr = h12 + ":" + String(min).padStart(2,'0') + " " + ampm;
+
+  show(`<div class="card error-card">
+    <span class="icon-big">🕐</span>
+    <h2>GYM <span class="red">CLOSED</span></h2>
+    <p class="sub">Check-in is only available during gym hours:</p>
+    <div style="background:#0f0f0f;border:1px solid #262626;border-radius:12px;padding:18px;margin:16px 0;font-size:14px;font-weight:800;line-height:1.8">
+      🌅 Morning: <b style="color:#e11d2a">4:00 AM – 10:00 AM</b><br>
+      🌆 Evening: <b style="color:#e11d2a">3:00 PM – 9:00 PM</b>
+    </div>
+    <p class="sub" style="font-size:12px">Current time: ${timeStr}</p>
+    <button class="primary" onclick="init()">TRY AGAIN</button>
+  </div>`);
+  }
+  function showError(msg){
   show(`<div class="card error-card">
     <span class="icon-big">⚠️</span>
     <h2>OOPS</h2>
