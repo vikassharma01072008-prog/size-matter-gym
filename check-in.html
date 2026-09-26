@@ -277,7 +277,7 @@ function showSuccess(member, stats, daysLeft){
     <div class="streak">${stats.streak}</div>
     <div class="streak-label">DAY STREAK 🔥</div>
     <div class="name-big">${esc(name)}</div>
-    <p class="msg">${stats.streak >= 7 ? "Consistency builds monsters." : stats.streak >= 3 ? "Keep the chain alive." : "Day 1 done. Come back tomorrow."}</p>
+    <p class="msg">${stats.streak >= 7 ? "Consistency builds monsters." : stats.streak >= 3 ? "Keep the chain alive." : stats.streak === 2 ? "Day 2. The chain begins." : "Day 1 done. Come back tomorrow."}</p>
     <div class="stats">
       <div class="stat"><b>${stats.month}</b><span>This Month</span></div>
       <div class="stat"><b>${stats.best}</b><span>Best Streak</span></div>
